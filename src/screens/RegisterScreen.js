@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const AllDrinks = () => {
+const RegisterScreen = () => {
   return (
     <View>
-      <Text>AllDrinks</Text>
+      <Text>RegisterScreen</Text>
     </View>
   )
 }
 
-export default AllDrinks;
+export default RegisterScreen
