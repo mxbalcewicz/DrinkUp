@@ -4,12 +4,13 @@ import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItem,
-  DrawerItemList
+  DrawerItemList,
 } from "@react-navigation/drawer";
-
 import FavouriteDrinks from "../screens/FavouriteDrinks";
 import LoginScreen from "../screens/LoginScreen";
 import HomeScreen from "../screens/HomeScreen";
+import QRScannerScreen from "../screens/QRScannerScreen";
+
 import Firebase from "../../config/firebase";
 
 const Stack = createStackNavigator();
@@ -17,7 +18,6 @@ const Drawer = createDrawerNavigator();
 const auth = Firebase.auth();
 
 export default function AuthenticatedStack() {
-  
   const handleUserSignOut = async () => {
     try {
       await auth.signOut();
@@ -25,7 +25,7 @@ export default function AuthenticatedStack() {
       console.log(error);
     }
   };
-  
+
   return (
     <Drawer.Navigator
       initialRouteName="Home"
@@ -34,16 +34,14 @@ export default function AuthenticatedStack() {
         return (
           <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />
-            <DrawerItem
-              label="Logout"
-              onPress={handleUserSignOut}
-            />
+            <DrawerItem label="Logout" onPress={handleUserSignOut} />
           </DrawerContentScrollView>
         );
       }}
     >
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Favourites" component={FavouriteDrinks} />
+      <Drawer.Screen name="QR Scanner" component={QRScannerScreen} />
     </Drawer.Navigator>
   );
 }

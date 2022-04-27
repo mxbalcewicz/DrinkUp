@@ -9,7 +9,6 @@ import React, { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import Firebase from "../../config/firebase";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const auth = Firebase.auth();
 

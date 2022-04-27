@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { View, ActivityIndicator } from "react-native";
-
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Firebase from "../../config/firebase";
 import { AuthenticatedUserContext } from "./AuthenticatedUserProvider";
 import AuthenticatedStack from "./AuthenticatedStack";
