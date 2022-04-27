@@ -26,10 +26,13 @@ const HomeScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <FlatList
         ListHeaderComponent={
-          <Image
-            source={require("../../assets/images/homescreen.jpg")}
-            style={styles.headerImage}
-          />
+          <View>
+            <Image
+              source={require("../../assets/images/homescreen.jpg")}
+              style={styles.headerImage}
+            />
+            <Text>Categories</Text>
+          </View>
         }
         data={dataSource}
         renderItem={({ item }) => (

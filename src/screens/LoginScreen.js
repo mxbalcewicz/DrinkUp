@@ -18,16 +18,16 @@ const LoginScreen = ({ navigation }) => {
 
   const handleUserLogIn = async () => {
     try {
-      if (email !== '' && password !== '') {
+      if (email !== "" && password !== "") {
         await auth.signInWithEmailAndPassword(email, password);
       }
     } catch (error) {
-      setLoginError(error.message);
+      console.log(error.message);
     }
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <MaterialCommunityIcons
         style={{ marginBottom: 10 }}
         name="glass-mug-variant"
@@ -51,17 +51,23 @@ const LoginScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={handleUserLogIn}
-          style={styles.button}
-        >
+        <TouchableOpacity onPress={handleUserLogIn} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => navigation.navigate("Register")}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Register</Text>
+        </TouchableOpacity> */}
+
+        <TouchableOpacity
+          style={styles.forgotButton}
+          onPress={() => navigation.navigate("Register")}
+        >
+          <Text style={styles.navButtonText}>
+            Don't have an acount? Create here
+          </Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -112,6 +118,9 @@ const styles = StyleSheet.create({
     color: "#0782F9",
     fontWeight: "700",
     fontSize: 16,
+  },
+  forgotButton: {
+    marginVertical: 35,
   },
 });
 
