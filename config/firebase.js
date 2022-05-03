@@ -1,6 +1,12 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
+// import firebase from 'firebase/app';
+// import 'firebase/firestore';
+// import 'firebase/auth';
+
+import * as firebase from 'firebase';
+import firestore from 'firebase/firestore';
+
 import Constants from 'expo-constants';
+// import firestore from 'firebase/firestore';
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -12,10 +18,14 @@ const firebaseConfig = {
   appId: Constants.manifest.extra.appId
 };
 
-let Firebase;
+// let Firebase;
 
 if (firebase.apps.length === 0) {
-  Firebase = firebase.initializeApp(firebaseConfig); 
+  firebase.initializeApp(firebaseConfig); 
 }
 
-export default Firebase;
+// firebase.initializeApp(firebaseConfig);
+firebase.firestore();
+firebase.auth();
+
+export default firebase;

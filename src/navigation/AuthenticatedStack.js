@@ -11,16 +11,16 @@ import LoginScreen from "../screens/LoginScreen";
 import HomeScreen from "../screens/HomeScreen";
 import QRScannerScreen from "../screens/QRScannerScreen";
 
-import Firebase from "../../config/firebase";
+import firebase from "../../config/firebase";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-const auth = Firebase.auth();
+// const auth = Firebase.auth();
 
 export default function AuthenticatedStack() {
   const handleUserSignOut = async () => {
     try {
-      await auth.signOut();
+      await firebase.auth().signOut();
     } catch (error) {
       console.log(error);
     }

@@ -7,10 +7,9 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
-import Firebase from "../../config/firebase";
+import firebase from "../../config/firebase";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const auth = Firebase.auth();
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -19,7 +18,7 @@ const LoginScreen = ({ navigation }) => {
   const handleUserLogIn = async () => {
     try {
       if (email !== "" && password !== "") {
-        await auth.signInWithEmailAndPassword(email, password);
+        await firebase.auth().signInWithEmailAndPassword(email, password);
       }
     } catch (error) {
       console.log(error.message);

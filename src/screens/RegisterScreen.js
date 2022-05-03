@@ -7,20 +7,26 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
-import Firebase from "../../config/firebase";
+import firebase from "../../config/firebase";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const auth = Firebase.auth();
-
 const RegisterScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [password2, setPassword2] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
 
   const handleUserSignUp = async () => {
     try {
-      if (email !== '' && password !== '' && password == password2) {
-        await auth.createUserWithEmailAndPassword(email, password);
+      if (email !== "" && password !== "" && password == password2) {
+        await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const currentUser = firebase.auth().currentUser;
+
+        const db = firebase.firestore();
+        db.collection("users").doc(currentUser.uid).set({
+          uid: currentUser.uid,
+          email: currentUser.email,
+          favourites: []
+        });
       }
     } catch (error) {
       console.log(error.message);
@@ -28,7 +34,10 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <MaterialCommunityIcons
         style={{ marginBottom: 10 }}
         name="glass-mug-variant"
@@ -73,12 +82,13 @@ const RegisterScreen = ({ navigation }) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-        style={styles.forgotButton}
-        onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.navButtonText}>
-          Already have an account? Log in here
-        </Text>
-      </TouchableOpacity>
+          style={styles.forgotButton}
+          onPress={() => navigation.navigate("Login")}
+        >
+          <Text style={styles.navButtonText}>
+            Already have an account? Log in here
+          </Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
@@ -134,4 +144,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegisterScreen
+export default RegisterScreen;
