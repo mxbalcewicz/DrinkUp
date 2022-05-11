@@ -5,14 +5,21 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+import firebase from "../../config/firebase";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import * as FirestoreService from "../services/FirestoreService";
+
 
 const HomeScreen = ({ navigation }) => {
-  const [dataSource, setDataSource] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useState(() => {
+  const [dataSource, setDataSource] = useState([]); // dummy data
+
+  const getDummy = () => {
     let items = Array.apply(null, Array(10)).map((v, i) => {
       return {
         id: i,
@@ -20,7 +27,39 @@ const HomeScreen = ({ navigation }) => {
       };
     });
     setDataSource(items);
+  };
+
+  const getCategories = async () => {
+    await firebase
+      .firestore()
+      .collection("categories")
+      .onSnapshot((querySnapshot) => {
+        const categories = [];
+        querySnapshot.docs.forEach((doc) => {
+          const { name, imgName } = doc.data();
+          categories.push({
+            id: doc.id,
+            name,
+            imgName,
+          });
+        });
+        setCategories(categories);
+      });
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getCategories();
+    getDummy();
   }, []);
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#ffcc00" />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -31,20 +70,24 @@ const HomeScreen = ({ navigation }) => {
               source={require("../../assets/images/homescreen.jpg")}
               style={styles.headerImage}
             />
-            <Text>Categories</Text>
+            <Text>Categories from database</Text>
           </View>
         }
-        data={dataSource}
+        data={categories}
         renderItem={({ item }) => (
           <View style={{ flex: 1, flexDirection: "column", margin: 1 }}>
-            <TouchableOpacity>
-              <Image style={styles.imageThumbnail} source={{ uri: item.src }} />
+            <TouchableOpacity style={{height:200, width:200}}>
+              {/* <Image style={styles.imageThumbnail} source={{ uri: item.src }} /> */}
+              <Text>{item.name}</Text>
             </TouchableOpacity>
           </View>
         )}
         numColumns={2}
         keyExtractor={(item, index) => index}
       />
+      <TouchableOpacity onPress={() => console.log(categories)}>
+        <Text>PRINT FETCHED DATA</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
