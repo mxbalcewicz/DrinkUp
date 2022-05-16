@@ -7,19 +7,14 @@ import {
   Text,
   ActivityIndicator,
   ImageBackground,
-<<<<<<< HEAD
   Dimensions,
-=======
->>>>>>> ccf2a983bb41a03355d632d2e299992bf182183d
 } from "react-native";
 
 import React, { useState, useEffect } from "react";
 import firebase from "../../config/firebase";
 import { TouchableOpacity } from "react-native-gesture-handler";
-<<<<<<< HEAD
-=======
-import * as FirestoreService from "../services/FirestoreService";
->>>>>>> ccf2a983bb41a03355d632d2e299992bf182183d
+//import * as FirestoreService from "../services/FirestoreService";
+
 
 const HomeScreen = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
@@ -46,13 +41,6 @@ const HomeScreen = ({ navigation }) => {
         const categories = [];
         querySnapshot.docs.forEach((doc) => {
           const { name, imgUrl } = doc.data();
-<<<<<<< HEAD
-=======
-          // const imgRef = firebase.storage().ref("categories/" + item.imgName);
-          // imgRef.getDownloadURL().then((url) => {
-          //   categories.push({...item, imgUrl: url})
-          // });
->>>>>>> ccf2a983bb41a03355d632d2e299992bf182183d
           categories.push({
             id: doc.id,
             name,
@@ -61,11 +49,6 @@ const HomeScreen = ({ navigation }) => {
         });
         setCategories(categories);
       });
-
-    // categories.forEach((item) => {
-
-    // });
-    // setCategories(categories)
     setIsLoading(false);
   };
 
@@ -96,7 +79,6 @@ const HomeScreen = ({ navigation }) => {
         data={categories}
         contentContainerStyle={styles.grid}
         renderItem={({ item }) => (
-<<<<<<< HEAD
           <TouchableOpacity
             style={{ padding: 1 }}
             onPress={() => {
@@ -110,16 +92,6 @@ const HomeScreen = ({ navigation }) => {
               <Text style={styles.categoryText}>{item.name}</Text>
             </ImageBackground>
           </TouchableOpacity>
-=======
-          <View style={{ flex: 1, flexDirection: "column", margin: 1 }}>
-            <TouchableOpacity style={{ height: 200, width: 200 }}>
-              {/* <Image style={styles.image} source={{ uri: item.imgUrl }} /> */}
-              <ImageBackground style={styles.image} source={{uri: item.imgUrl }}>
-                <Text style={styles.categoryText}>{item.name}</Text>
-              </ImageBackground>
-            </TouchableOpacity>
-          </View>
->>>>>>> ccf2a983bb41a03355d632d2e299992bf182183d
         )}
         numColumns={2}
         keyExtractor={(item) => item.id}
@@ -156,10 +128,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "white",
     textTransform: "capitalize",
-<<<<<<< HEAD
-=======
-    textS
-    
->>>>>>> ccf2a983bb41a03355d632d2e299992bf182183d
   },
 });
