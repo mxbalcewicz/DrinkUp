@@ -12,6 +12,7 @@ import HomeScreen from "../screens/HomeScreen";
 import QRScannerScreen from "../screens/QRScannerScreen";
 
 import firebase from "../../config/firebase";
+import CategoryScreen from "../screens/CategoryScreen";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -40,6 +41,13 @@ export default function AuthenticatedStack() {
       }}
     >
       <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen
+        name="Category"
+        component={CategoryScreen}
+        options={{
+          drawerItemStyle: { display: "none" },
+        }}
+      />
       <Drawer.Screen name="Favourites" component={FavouriteDrinks} />
       <Drawer.Screen name="QR Scanner" component={QRScannerScreen} />
     </Drawer.Navigator>

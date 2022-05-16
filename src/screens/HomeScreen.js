@@ -6,28 +6,19 @@ import {
   StyleSheet,
   Image,
   ActivityIndicator,
+  ImageBackground,
+  Dimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import firebase from "../../config/firebase";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import * as FirestoreService from "../services/FirestoreService";
-
 
 const HomeScreen = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [dataSource, setDataSource] = useState([]); // dummy data
-
-  const getDummy = () => {
-    let items = Array.apply(null, Array(10)).map((v, i) => {
-      return {
-        id: i,
-        src: "http://via.placeholder.com/200x200?text=" + (i + 1),
-      };
-    });
-    setDataSource(items);
-  };
+  const screenWidth = Dimensions.get("window").width;
+  const numColumns = 2;
+  const tileSize = screenWidth / numColumns;
 
   const getCategories = async () => {
     await firebase
@@ -36,11 +27,11 @@ const HomeScreen = ({ navigation }) => {
       .onSnapshot((querySnapshot) => {
         const categories = [];
         querySnapshot.docs.forEach((doc) => {
-          const { name, imgName } = doc.data();
+          const { name, imgUrl } = doc.data();
           categories.push({
             id: doc.id,
             name,
-            imgName,
+            imgUrl,
           });
         });
         setCategories(categories);
@@ -50,7 +41,6 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     getCategories();
-    getDummy();
   }, []);
 
   if (isLoading) {
@@ -65,7 +55,7 @@ const HomeScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <FlatList
         ListHeaderComponent={
-          <View>
+          <View style={{ flex: 1 }}>
             <Image
               source={require("../../assets/images/homescreen.jpg")}
               style={styles.headerImage}
@@ -74,16 +64,24 @@ const HomeScreen = ({ navigation }) => {
           </View>
         }
         data={categories}
+        contentContainerStyle={styles.grid}
         renderItem={({ item }) => (
-          <View style={{ flex: 1, flexDirection: "column", margin: 1 }}>
-            <TouchableOpacity style={{height:200, width:200}}>
-              {/* <Image style={styles.imageThumbnail} source={{ uri: item.src }} /> */}
-              <Text>{item.name}</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={{ padding: 1 }}
+            onPress={() => {
+              navigation.navigate("Category", { id: item.id, name: item.name, imgUrl: item.imgUrl });
+            }}
+          >
+            <ImageBackground
+              style={{ width: tileSize, height: tileSize }}
+              source={{ uri: item.imgUrl }}
+            >
+              <Text style={styles.categoryText}>{item.name}</Text>
+            </ImageBackground>
+          </TouchableOpacity>
         )}
         numColumns={2}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item) => item.id}
       />
       <TouchableOpacity onPress={() => console.log(categories)}>
         <Text>PRINT FETCHED DATA</Text>
@@ -100,14 +98,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
   },
-  imageThumbnail: {
-    justifyContent: "center",
-    alignItems: "center",
+  image: {
+    flexGrow: 1,
     height: 200,
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerImage: {
     height: 300,
     flex: 1,
     width: null,
+  },
+  categoryText: {
+    position: "absolute",
+    textAlign: "center",
+    fontSize: 20,
+    color: "white",
+    textTransform: "capitalize",
   },
 });
