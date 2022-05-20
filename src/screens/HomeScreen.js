@@ -23,16 +23,6 @@ const HomeScreen = ({ navigation }) => {
   const numColumns = 2;
   const tileSize = screenWidth / numColumns;
 
-  const getImageUrl = async (imgName) => {
-    const imgUrl = "";
-    const ref = firebase.storage().ref("categories/" + imgName);
-    const url = await ref.getDownloadURL().then((url) => (imgUrl = url));
-    // await firebase.storage().ref('categories/' + imgName).getDownloadURL().then((url) => object.imgUrl = url)
-
-    console.log(imgUrl);
-    return imgUrl;
-  };
-
   const getCategories = async () => {
     await firebase
       .firestore()

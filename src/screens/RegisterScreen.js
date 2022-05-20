@@ -25,7 +25,8 @@ const RegisterScreen = ({ navigation }) => {
         db.collection("users").doc(currentUser.uid).set({
           uid: currentUser.uid,
           email: currentUser.email,
-          favourites: []
+          favourites: [],
+          scannedMenus: [],
         });
       }
     } catch (error) {

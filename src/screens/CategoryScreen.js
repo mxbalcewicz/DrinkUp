@@ -12,11 +12,13 @@ import {
 import firebase from "../../config/firebase";
 import React, { useState, useEffect } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useIsFocused } from "@react-navigation/native";
 
 const CategoryScreen = ({ route, navigation }) => {
   const screenWidth = Dimensions.get("window").width;
   const numColumns = 2;
   const tileSize = screenWidth / numColumns;
+  const isFocused = useIsFocused();
 
   const [drinks, setDrinks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,9 +34,10 @@ const CategoryScreen = ({ route, navigation }) => {
         const drinks = [];
         querySnapshot.docs.forEach((doc) => {
           console.log(doc.data());
-          const { name, imgUrl } = doc.data();
+          const { name, imgUrl, category } = doc.data();
           drinks.push({
             id: doc.id,
+            category, 
             name,
             imgUrl,
           });
@@ -44,9 +47,12 @@ const CategoryScreen = ({ route, navigation }) => {
     setIsLoading(false);
   };
 
-  useState(() => {
-    getDrinks();
-  }, []);
+  useEffect(() => {
+    console.log('called');
+    if(isFocused){ 
+      getDrinks();
+    }
+  }, [isFocused]);
 
   if (isLoading) {
     return (
@@ -87,6 +93,12 @@ const CategoryScreen = ({ route, navigation }) => {
         numColumns={2}
         keyExtractor={(item, index) => index}
       />
+      <TouchableOpacity onPress={() => {
+        console.log(drinks);
+        console.log(data);
+        }}>
+        <Text>PRINT FETCHED DATA</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

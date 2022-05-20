@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
+import firebase from "../../config/firebase";
+
 
 const QRScannerScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState('Not yet scanned')
+  const [userId, setUserId] = useState();
+
+  const getUserData = () => {
+    const data = firebase.auth().currentUser;
+    setUserId(data.uid);
+  }
 
   const askForCameraPermission = () => {
     (async () => {
@@ -14,14 +22,23 @@ const QRScannerScreen = ({ navigation }) => {
     })()
   }
 
+  const scanNewMenu = async (data) => {
+    const value = firebase.firestore.FieldValue.arrayUnion(data);
+    const docRef = firebase.firestore().collection("users").doc(userId);
+    console.log(userId);
+    docRef.update({scannedMenus: value}).then(()=>console.log('Updated'));
+  }
+
   useEffect(() => {
+    getUserData();
     askForCameraPermission();
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    setText(data)
-    console.log('Type: ' + type + '\nData: ' + data)
+    setText(data);
+    scanNewMenu(data);
+    console.log('Type: ' + type + '\nData: ' + data);
   };
 
   if (hasPermission === null) {
