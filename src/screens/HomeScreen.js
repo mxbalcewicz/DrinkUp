@@ -13,15 +13,14 @@ import {
 import React, { useState, useEffect } from "react";
 import firebase from "../../config/firebase";
 import { TouchableOpacity } from "react-native-gesture-handler";
-//import * as FirestoreService from "../services/FirestoreService";
 
+const screenWidth = Dimensions.get("window").width;
+const numColumns = 2;
+const tileSize = screenWidth / numColumns;
 
 const HomeScreen = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const screenWidth = Dimensions.get("window").width;
-  const numColumns = 2;
-  const tileSize = screenWidth / numColumns;
 
   const getCategories = async () => {
     await firebase
@@ -40,6 +39,7 @@ const HomeScreen = ({ navigation }) => {
         setCategories(categories);
       });
     setIsLoading(false);
+    console.log(tileSize);
   };
 
   useEffect(() => {
@@ -55,28 +55,31 @@ const HomeScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView>
       <FlatList
         ListHeaderComponent={
-          <View style={{ flex: 1 }}>
+          <View>
             <Image
               source={require("../../assets/images/homescreen.jpg")}
               style={styles.headerImage}
             />
-            <Text>Categories from database</Text>
           </View>
         }
         data={categories}
-        contentContainerStyle={styles.grid}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={{ padding: 1 }}
+            // style={styles.item}
+            style={{overflow:"hidden"}}
             onPress={() => {
-              navigation.navigate("Category", { id: item.id, name: item.name, imgUrl: item.imgUrl });
+              navigation.navigate("Category", {
+                id: item.id,
+                name: item.name,
+                imgUrl: item.imgUrl,
+              });
             }}
           >
             <ImageBackground
-              style={{ width: tileSize, height: tileSize }}
+              style={styles.item}
               source={{ uri: item.imgUrl }}
             >
               <Text style={styles.categoryText}>{item.name}</Text>
@@ -103,9 +106,10 @@ const styles = StyleSheet.create({
   },
   image: {
     flexGrow: 1,
-    height: 200,
+    height: Dimensions.get("window").width / numColumns,
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 5,
   },
   headerImage: {
     height: 300,
@@ -118,5 +122,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "white",
     textTransform: "capitalize",
+  },
+  item: {
+    backgroundColor: "#e5b513",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    height: Dimensions.get("window").width / numColumns - 2,
+    width: Dimensions.get("window").width / numColumns -2,
+    margin: 1,
   },
 });

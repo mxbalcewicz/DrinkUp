@@ -7,7 +7,7 @@ import {
   Image,
   ActivityIndicator,
   Dimensions,
-  ImageBackground
+  ImageBackground,
 } from "react-native";
 import firebase from "../../config/firebase";
 import React, { useState, useEffect } from "react";
@@ -29,17 +29,22 @@ const CategoryScreen = ({ route, navigation }) => {
     console.log(data.name);
     await firebase
       .firestore()
-      .collection("drinks").where("category", "==", data.name)
+      .collection("drinks")
+      .where("category", "==", data.name)
       .onSnapshot((querySnapshot) => {
         const drinks = [];
         querySnapshot.docs.forEach((doc) => {
-          console.log(doc.data());
-          const { name, imgUrl, category } = doc.data();
+          //console.log(doc.data());
+          const { name, ingredients, hex, description, imgUrl, category } =
+            doc.data();
           drinks.push({
             id: doc.id,
-            category, 
             name,
+            ingredients,
+            hex,
+            description,
             imgUrl,
+            category,
           });
         });
         setDrinks(drinks);
@@ -48,8 +53,7 @@ const CategoryScreen = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    console.log('called');
-    if(isFocused){ 
+    if (isFocused) {
       getDrinks();
     }
   }, [isFocused]);
@@ -67,10 +71,7 @@ const CategoryScreen = ({ route, navigation }) => {
       <FlatList
         ListHeaderComponent={
           <View>
-            <Image
-              source={{uri: data.imgUrl}}
-              style={styles.headerImage}
-            />
+            <Image source={{ uri: data.imgUrl }} style={styles.headerImage} />
             <Text>Category: {data.name}</Text>
           </View>
         }
@@ -79,7 +80,8 @@ const CategoryScreen = ({ route, navigation }) => {
           <TouchableOpacity
             style={{ padding: 1 }}
             onPress={() => {
-              //navigation.navigate("Category", { id: item.id, name: item.name, imgUrl: item.imgUrl });
+              console.log("Clicked item:", item);
+              navigation.navigate("ItemDetail", { ...item });
             }}
           >
             <ImageBackground
@@ -93,10 +95,12 @@ const CategoryScreen = ({ route, navigation }) => {
         numColumns={2}
         keyExtractor={(item, index) => index}
       />
-      <TouchableOpacity onPress={() => {
-        console.log(drinks);
-        console.log(data);
-        }}>
+      <TouchableOpacity
+        onPress={() => {
+          console.log(drinks);
+          console.log(data);
+        }}
+      >
         <Text>PRINT FETCHED DATA</Text>
       </TouchableOpacity>
     </SafeAreaView>

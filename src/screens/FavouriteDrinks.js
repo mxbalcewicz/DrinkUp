@@ -4,108 +4,73 @@ import {
   StyleSheet,
   ActivityIndicator,
   SafeAreaView,
-  Button,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  ImageBackground,
+  Dimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import firebase from "../../config/firebase";
 
+const screenWidth = Dimensions.get("window").width;
+const numColumns = 2;
+const tileSize = screenWidth / numColumns;
+
 const FavouriteDrinks = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [favouriteDrinksIds, setFavouriteDrinksIds] = useState([]);
   const [userId, setUserId] = useState();
   const [drinks, setDrinks] = useState([]);
 
-  const getData = () => {
+  const fetchUserId = () => {
     const userId = firebase.auth().currentUser.uid;
-    setUserId(userId);
-
-    const fetchData = firebase
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .onSnapshot((documentSnapshot) => {
-        setFavouriteDrinksIds(documentSnapshot.data().favourites);
-      });
-
-    const favouriteDrinks = firebase
-      .firestore()
-      .collection("drinks")
-      .where(
-        firebase.firestore.FieldPath.documentId(),
-        "in",
-        favouriteDrinksIds
-      )
-      .onSnapshot((querySnapshot) => {
-        querySnapshot.docs.forEach((doc) => {
-          const { hex, category, description, name, imgUrl, ingredients } =
-            doc.data();
-          drinks.push({
-            id: doc.id,
-            hex,
-            category,
-            description,
-            name,
-            imgUrl,
-            ingredients,
-          });
-        });
-        setDrinks(drinks);
-      });
-    setIsLoading(false);
-  };
-
-  const fetchUserId = async () => {
-    const userId = await firebase.auth().currentUser.uid;
     setUserId(userId);
     return userId;
   };
 
   const fetchFavouriteDrinksIds = async (userId) => {
-    await firebase
+    const snapshot = await firebase
       .firestore()
       .collection("users")
       .doc(userId)
-      .get().then((documentSnapshot) => {
-        setFavouriteDrinksIds(documentSnapshot.data().favourites);
-      });
-    return favouriteDrinksIds;
+      .get();
+
+    return snapshot.data().favourites;
   };
 
   const fetchFavouriteDrinks = async (drinksIds) => {
-    await firebase
+    const snapshot = await firebase
       .firestore()
       .collection("drinks")
-      .where(
-        firebase.firestore.FieldPath.documentId(),
-        "in",
-        favouriteDrinksIds
-      )
-      .get().then((querySnapshot) => {
-        querySnapshot.docs.forEach((doc) => {
-          const { hex, category, description, name, imgUrl, ingredients } =
-            doc.data();
-          console.log(doc.data());
-          drinks.push({
-            id: doc.id,
-            hex,
-            category,
-            description,
-            name,
-            imgUrl,
-            ingredients,
-          });
-        });
-        setDrinks(drinks);
+      .where(firebase.firestore.FieldPath.documentId(), "in", drinksIds)
+      .get();
+
+    const drinks = [];
+    snapshot.forEach((doc) => {
+      const { hex, category, description, name, imgUrl, ingredients } =
+        doc.data();
+
+      console.log(doc.data());
+
+      drinks.push({
+        id: doc.id,
+        hex,
+        category,
+        description,
+        name,
+        imgUrl,
+        ingredients,
       });
+    });
+
+    setDrinks(drinks);
     setIsLoading(false);
   };
 
   const fetchData = async () => {
-    const userId = await fetchUserId();
-    const favouriteDrinksIds = await fetchFavouriteDrinksIds(userId);
-    const favouriteDrinksObjects = await fetchFavouriteDrinks(
-      favouriteDrinksIds
-    );
+    const userId = fetchUserId();
+    const favouriteIds = await fetchFavouriteDrinksIds(userId);
+    const favouriteDrinksObjects = await fetchFavouriteDrinks(favouriteIds);
   };
 
   useEffect(() => {
@@ -121,15 +86,33 @@ const FavouriteDrinks = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text>FavouriteDrinks of user {userId}</Text>
-      <Button
-        title="user fav drinks ids"
-        onPress={() => console.log("Favourite drinks:", favouriteDrinksIds)}
-      />
-      <Button
-        title="drink objects"
-        onPress={() => console.log("Pulled drinks objects:", drinks)}
+    <SafeAreaView>
+      <FlatList
+        ListHeaderComponent={
+          <View>
+            <Image
+              source={require("../../assets/images/homescreen.jpg")}
+              style={styles.headerImage}
+            />
+          </View>
+        }
+        data={drinks}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={{ overflow: "hidden" }}
+            onPress={() => {
+              navigation.navigate("ItemDetail", {
+                ...item
+              });
+            }}
+          >
+            <ImageBackground style={styles.item} source={{ uri: item.imgUrl }}>
+              <Text style={styles.categoryText}>{item.name}</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+        )}
+        numColumns={2}
+        keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
   );
@@ -141,5 +124,33 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "white",
+  },
+  image: {
+    flexGrow: 1,
+    height: Dimensions.get("window").width / numColumns,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 5,
+  },
+  headerImage: {
+    height: 300,
+    flex: 1,
+    width: null,
+  },
+  categoryText: {
+    position: "absolute",
+    textAlign: "center",
+    fontSize: 20,
+    color: "white",
+    textTransform: "capitalize",
+  },
+  item: {
+    backgroundColor: "#e5b513",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    height: Dimensions.get("window").width / numColumns - 2,
+    width: Dimensions.get("window").width / numColumns - 2,
+    margin: 1,
   },
 });
