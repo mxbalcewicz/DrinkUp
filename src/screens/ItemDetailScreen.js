@@ -45,12 +45,7 @@ const ItemDetailScreen = ({ route, navigation }) => {
     }
   };
 
-  const getCurrentDrink = () => {
-    drink = route.params;
-  }
-
   const fetchData = async () => {
-    // getCurrentDrink();
     const userId = fetchUserId();
     const favouriteIds = await fetchFavouriteDrinksIds(userId);
   };

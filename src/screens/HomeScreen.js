@@ -89,9 +89,6 @@ const HomeScreen = ({ navigation }) => {
         numColumns={2}
         keyExtractor={(item) => item.id}
       />
-      <TouchableOpacity onPress={() => console.log(categories)}>
-        <Text>PRINT FETCHED DATA</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };

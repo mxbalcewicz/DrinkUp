@@ -59,7 +59,7 @@ export default function AuthenticatedStack() {
         }}
       />
       <Drawer.Screen
-        name="MenuItemDetail"
+        name="MenuDetailScreen"
         component={MenuDetailScreen}
         options={{
           drawerItemStyle: { display: "none" },
