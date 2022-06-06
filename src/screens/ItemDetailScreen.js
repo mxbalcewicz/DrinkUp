@@ -8,28 +8,82 @@ import {
   ActivityIndicator,
   ImageBackground,
   Dimensions,
+  Button,
 } from "react-native";
-import React, { useState, useEffect } from 'react'
+import { useIsFocused } from "@react-navigation/native";
+import React, { useState, useEffect } from "react";
+import { IconButton, Colors } from "react-native-paper";
+import firebase from "../../config/firebase";
 
-const ItemDetailScreen = ({route, navigation}) => {
+const ItemDetailScreen = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [drink, setDrink] = useState(route.params);
+  const drink = route.params;
+  const [userFavourites, setUserFavourites] = useState([]);
+  const [isFavourite, setIsFavourite] = useState(false);
+  const [userId, setUserId] = useState();
+  const isFocused = useIsFocused();
 
-  const updateFavouriteDrinks = () => {
-    console.log("Entered drink details:", drink); 
+  const fetchUserId = () => {
+    const userId = firebase.auth().currentUser.uid;
+    setUserId(userId);
+    return userId;
+  };
+
+  const fetchFavouriteDrinksIds = async (userId) => {
+    const snapshot = await firebase
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .get();
+
+    setUserFavourites(snapshot.data().favourites);
+    console.log(userFavourites);
+    if (snapshot.data().favourites.includes(drink.hex)) {
+      setIsFavourite(true);
+    } else {
+      setIsFavourite(false);
+    }
+  };
+
+  const getCurrentDrink = () => {
+    drink = route.params;
   }
 
-  const addToFavourites = async ( itemHex ) => {
+  const fetchData = async () => {
+    // getCurrentDrink();
+    const userId = fetchUserId();
+    const favouriteIds = await fetchFavouriteDrinksIds(userId);
+  };
+
+  const removeFromFavourites = async (data) => {
+    const docRef = firebase.firestore().collection("users").doc(userId);
+    docRef.update({ favourites: firebase.firestore.FieldValue.arrayRemove(data) });
+    console.log("Fav removed");
+    fetchFavouriteDrinksIds(userId);
+  };
+
+  const addToFavourites = async (data) => {
+    console.log("FavData to add", data);
+    // const value = firebase.firestore.FieldValue.arrayUnion(data);
+    const docRef = firebase.firestore().collection("users").doc(userId);
+    // console.log(userId);
+    docRef.update({ favourites: firebase.firestore.FieldValue.arrayUnion(data) });
+    console.log("Updated");
+    fetchFavouriteDrinksIds(userId);
+  };
+
+  const scanNewMenu = async (data) => {
+    const value = firebase.firestore.FieldValue.arrayUnion(data);
     const docRef = firebase.firestore().collection("users").doc(userId);
     console.log(userId);
-    docRef.update({favourites: itemHex}).then(()=>console.log('Updated'));
+    docRef.update({scannedMenus: value}).then(()=>console.log('Updated'));
   }
 
   useEffect(() => {
-    updateFavouriteDrinks();
+    fetchData();
     setIsLoading(false);
   }, []);
-  
+
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -45,13 +99,20 @@ const ItemDetailScreen = ({route, navigation}) => {
       <Text>{drink.description}</Text>
       <Text>{drink.ingredients}</Text>
       <Text>{drink.hex}</Text>
-      <Button title="Add to fav" onPress={addToFavourites(drink.hex)}/>
-      <Image source={{uri: drink.imgUrl}} />
+      <IconButton
+        icon={isFavourite ? "star" : "star-outline"}
+        color={isFavourite ? Colors.yellow500 : Colors.black500}
+        size={24}
+        onPress={
+          isFavourite ? () => removeFromFavourites(drink.hex) : () => addToFavourites(drink.hex)
+        }
+      />
+      <Image source={{ uri: drink.imgUrl }} />
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default ItemDetailScreen
+export default ItemDetailScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -59,4 +120,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
   },
-})
+});

@@ -14,6 +14,8 @@ import QRScannerScreen from "../screens/QRScannerScreen";
 import firebase from "../../config/firebase";
 import CategoryScreen from "../screens/CategoryScreen";
 import ItemDetailScreen from "../screens/ItemDetailScreen";
+import ScannedMenusScreen from "../screens/ScannedMenusScreen";
+import MenuDetailScreen from "../screens/MenuDetailScreen";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -50,13 +52,21 @@ export default function AuthenticatedStack() {
         }}
       />
       <Drawer.Screen
-      name="ItemDetail"
-      component={ItemDetailScreen}
-      options={{
-        drawerItemStyle: {display: "none"},
-      }}
+        name="ItemDetail"
+        component={ItemDetailScreen}
+        options={{
+          drawerItemStyle: { display: "none" },
+        }}
+      />
+      <Drawer.Screen
+        name="MenuItemDetail"
+        component={MenuDetailScreen}
+        options={{
+          drawerItemStyle: { display: "none" },
+        }}
       />
       <Drawer.Screen name="Favourites" component={FavouriteDrinks} />
+      <Drawer.Screen name="Scanned Menus" component={ScannedMenusScreen} />
       <Drawer.Screen name="QR Scanner" component={QRScannerScreen} />
     </Drawer.Navigator>
   );
