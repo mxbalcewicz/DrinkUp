@@ -70,9 +70,15 @@ const CategoryScreen = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
       <FlatList
         ListHeaderComponent={
-          <View>
-            <Image source={{ uri: data.imgUrl }} style={styles.headerImage} />
-            <Text>Category: {data.name}</Text>
+          <View style={styles.container}>
+            <ImageBackground
+              source={{ uri: data.imgUrl }}
+              style={styles.headerImage}
+            >
+              <View style={styles.textView}>
+                <Text style={styles.titleText}>Category: {data.name}</Text>
+              </View>
+            </ImageBackground>
           </View>
         }
         data={drinks}
@@ -88,7 +94,9 @@ const CategoryScreen = ({ route, navigation }) => {
               style={{ width: tileSize, height: tileSize }}
               source={{ uri: item.imgUrl }}
             >
-              <Text style={styles.categoryText}>{item.name}</Text>
+              <View style={styles.textView}>
+                <Text style={styles.categoryText}>{item.name}</Text>
+              </View>
             </ImageBackground>
           </TouchableOpacity>
         )}
@@ -124,5 +132,25 @@ const styles = StyleSheet.create({
     height: 300,
     flex: 1,
     width: null,
+  },
+  categoryText: {
+    fontSize: 20,
+    color: "white",
+  },
+  textView: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  titleText: {
+    fontSize: 30,
+    color: "white",
   },
 });

@@ -13,6 +13,7 @@ import {
 import React, { useState, useEffect } from "react";
 import firebase from "../../config/firebase";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 2;
@@ -58,18 +59,28 @@ const HomeScreen = ({ navigation }) => {
     <SafeAreaView>
       <FlatList
         ListHeaderComponent={
-          <View>
-            <Image
+          <View style={styles.container}>
+            <ImageBackground
               source={require("../../assets/images/homescreen.jpg")}
               style={styles.headerImage}
-            />
+            >
+              <View style={styles.textView}>
+                <Text style={styles.titleText}>DrinkUp</Text>
+                <MaterialCommunityIcons
+                  style={{ marginBottom: 10 }}
+                  name="glass-mug-variant"
+                  size={64}
+                  color="white"
+                />
+              </View>
+            </ImageBackground>
           </View>
         }
         data={categories}
         renderItem={({ item }) => (
           <TouchableOpacity
             // style={styles.item}
-            style={{overflow:"hidden"}}
+            style={{ overflow: "hidden" }}
             onPress={() => {
               navigation.navigate("Category", {
                 id: item.id,
@@ -78,10 +89,7 @@ const HomeScreen = ({ navigation }) => {
               });
             }}
           >
-            <ImageBackground
-              style={styles.item}
-              source={{ uri: item.imgUrl }}
-            >
+            <ImageBackground style={styles.item} source={{ uri: item.imgUrl }}>
               <Text style={styles.categoryText}>{item.name}</Text>
             </ImageBackground>
           </TouchableOpacity>
@@ -111,7 +119,7 @@ const styles = StyleSheet.create({
   headerImage: {
     height: 300,
     flex: 1,
-    width: null,
+    width: "100%",
   },
   categoryText: {
     position: "absolute",
@@ -121,12 +129,28 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   item: {
-    backgroundColor: "#e5b513",
+    backgroundColor: "#313638",
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
     height: Dimensions.get("window").width / numColumns - 2,
-    width: Dimensions.get("window").width / numColumns -2,
+    width: Dimensions.get("window").width / numColumns - 2,
     margin: 1,
+  },
+  textView: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  titleText: {
+    fontSize: 30,
+    color: "white",
   },
 });

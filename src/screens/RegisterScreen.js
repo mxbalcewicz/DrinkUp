@@ -39,12 +39,15 @@ const RegisterScreen = ({ navigation }) => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <MaterialCommunityIcons
-        style={{ marginBottom: 10 }}
-        name="glass-mug-variant"
-        size={64}
-        color="black"
-      />
+      <View style={styles.titleContainer}>
+        <Text style={{ fontSize: 30 }}>DrinkUp</Text>
+        <MaterialCommunityIcons
+          style={{ marginBottom: 10 }}
+          name="glass-mug-variant"
+          size={64}
+          color="black"
+        />
+      </View>
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"
@@ -100,6 +103,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  titleContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
   },
   inputContainer: {
     width: "80%",

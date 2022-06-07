@@ -10,7 +10,6 @@ import { TextInput } from "react-native-gesture-handler";
 import firebase from "../../config/firebase";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,13 +25,19 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <MaterialCommunityIcons
-        style={{ marginBottom: 10 }}
-        name="glass-mug-variant"
-        size={64}
-        color="black"
-      />
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <View style={styles.titleContainer}>
+        <Text style={{ fontSize: 30 }}>DrinkUp</Text>
+        <MaterialCommunityIcons
+          style={{ marginBottom: 10 }}
+          name="glass-mug-variant"
+          size={64}
+          color="black"
+        />
+      </View>
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"
@@ -65,7 +70,7 @@ const LoginScreen = ({ navigation }) => {
           onPress={() => navigation.navigate("Register")}
         >
           <Text style={styles.navButtonText}>
-            Don't have an acount? Create here
+            Don't have an account? Create here
           </Text>
         </TouchableOpacity>
       </View>
@@ -78,6 +83,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  titleContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
   },
   inputContainer: {
     width: "80%",

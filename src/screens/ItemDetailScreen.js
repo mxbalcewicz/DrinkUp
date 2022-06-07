@@ -52,7 +52,9 @@ const ItemDetailScreen = ({ route, navigation }) => {
 
   const removeFromFavourites = async (data) => {
     const docRef = firebase.firestore().collection("users").doc(userId);
-    docRef.update({ favourites: firebase.firestore.FieldValue.arrayRemove(data) });
+    docRef.update({
+      favourites: firebase.firestore.FieldValue.arrayRemove(data),
+    });
     console.log("Fav removed");
     fetchFavouriteDrinksIds(userId);
   };
@@ -62,7 +64,9 @@ const ItemDetailScreen = ({ route, navigation }) => {
     // const value = firebase.firestore.FieldValue.arrayUnion(data);
     const docRef = firebase.firestore().collection("users").doc(userId);
     // console.log(userId);
-    docRef.update({ favourites: firebase.firestore.FieldValue.arrayUnion(data) });
+    docRef.update({
+      favourites: firebase.firestore.FieldValue.arrayUnion(data),
+    });
     console.log("Updated");
     fetchFavouriteDrinksIds(userId);
   };
@@ -71,8 +75,8 @@ const ItemDetailScreen = ({ route, navigation }) => {
     const value = firebase.firestore.FieldValue.arrayUnion(data);
     const docRef = firebase.firestore().collection("users").doc(userId);
     console.log(userId);
-    docRef.update({scannedMenus: value}).then(()=>console.log('Updated'));
-  }
+    docRef.update({ scannedMenus: value }).then(() => console.log("Updated"));
+  };
 
   useEffect(() => {
     fetchData();
@@ -87,22 +91,45 @@ const ItemDetailScreen = ({ route, navigation }) => {
     );
   }
 
+  const listItems = drink.ingredients.map((el) => (
+    <Text style={{ fontSize: 20, marginLeft: 20 }}>- {el}</Text>
+  ));
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text>ItemDetail</Text>
-      <Text>{drink.name}</Text>
-      <Text>{drink.description}</Text>
-      <Text>{drink.ingredients}</Text>
-      <Text>{drink.hex}</Text>
-      <IconButton
-        icon={isFavourite ? "star" : "star-outline"}
-        color={isFavourite ? Colors.yellow500 : Colors.black500}
-        size={24}
-        onPress={
-          isFavourite ? () => removeFromFavourites(drink.hex) : () => addToFavourites(drink.hex)
-        }
-      />
-      <Image source={{ uri: drink.imgUrl }} />
+      <View style={styles.containerImage}>
+        <ImageBackground
+          style={styles.drinkImage}
+          imageStyle={{ borderRadius: 20 }}
+          source={{ uri: drink.imgUrl }}
+        ></ImageBackground>
+      </View>
+      <View style={styles.containerTitle}>
+        <View style={styles.containerBox}>
+          <View style={styles.innerContainer}>
+            <Text style={styles.drinkName}>{drink.name}</Text>
+            <View style={styles.favouriteContainer}>
+              <Text>Add to favourite:</Text>
+              <IconButton
+                icon={isFavourite ? "star" : "star-outline"}
+                color={isFavourite ? Colors.yellow500 : Colors.black500}
+                size={40}
+                onPress={
+                  isFavourite
+                    ? () => removeFromFavourites(drink.hex)
+                    : () => addToFavourites(drink.hex)
+                }
+              />
+            </View>
+          </View>
+        </View>
+        <View style={styles.containerBox}>
+          <View style={styles.innerContainerIngredients}>
+            <Text style={{ fontSize: 24 }}>List of ingredients:</Text>
+            <View style={styles.ingredientsContainer}>{listItems}</View>
+          </View>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };
@@ -114,5 +141,59 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "white",
+  },
+  containerImage: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "white",
+    marginTop: 50,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  drinkImage: {
+    height: 250,
+    flex: 1,
+    width: null,
+  },
+  containerTitle: {
+    width: "100%",
+    height: "60%",
+    padding: 5,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginRight: 20,
+    marginLeft: 20,
+  },
+  containerBox: {
+    width: "100%",
+    height: "20%",
+    padding: 5,
+  },
+  innerContainer: {
+    flex: 1,
+    alignContent: "center",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  drinkName: {
+    fontSize: 40,
+    fontWeight: "bold",
+  },
+  favouriteContainer: {
+    flex: 1,
+    alignContent: "center",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  innerContainerIngredients: {
+    flex: 1,
+    alignContent: "flex-start",
+    justifyContent: "flex-start",
+    flexDirection: "column",
+    flexWrap: "wrap",
+  },
+  ingredientsContainer: {
+    flex: 1,
   },
 });
