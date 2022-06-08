@@ -92,7 +92,7 @@ const ItemDetailScreen = ({ route, navigation }) => {
   }
 
   const listItems = drink.ingredients.map((el) => (
-    <Text style={{ fontSize: 20, marginLeft: 20 }}>- {el}</Text>
+    <Text style={{ fontSize: 15 }}>- {el}</Text>
   ));
 
   return (
@@ -104,30 +104,42 @@ const ItemDetailScreen = ({ route, navigation }) => {
           source={{ uri: drink.imgUrl }}
         ></ImageBackground>
       </View>
-      <View style={styles.containerTitle}>
-        <View style={styles.containerBox}>
-          <View style={styles.innerContainer}>
-            <Text style={styles.drinkName}>{drink.name}</Text>
-            <View style={styles.favouriteContainer}>
-              <Text>Add to favourite:</Text>
-              <IconButton
-                icon={isFavourite ? "star" : "star-outline"}
-                color={isFavourite ? Colors.yellow500 : Colors.black500}
-                size={40}
-                onPress={
-                  isFavourite
-                    ? () => removeFromFavourites(drink.hex)
-                    : () => addToFavourites(drink.hex)
-                }
-              />
-            </View>
+
+      <View style={styles.containerContent}>
+        <View style={styles.titleContainer}>
+          <Text style={{ fontSize: 30, fontWeight: "bold" }}>{drink.name}</Text>
+          <View style={styles.favouriteContainer}>
+            <Text>Add to favourite:</Text>
+            <IconButton
+              icon={isFavourite ? "star" : "star-outline"}
+              color={isFavourite ? Colors.yellow500 : Colors.black500}
+              size={40}
+              onPress={
+                isFavourite
+                  ? () => removeFromFavourites(drink.hex)
+                  : () => addToFavourites(drink.hex)
+              }
+            />
           </View>
         </View>
-        <View style={styles.containerBox}>
-          <View style={styles.innerContainerIngredients}>
-            <Text style={{ fontSize: 24 }}>List of ingredients:</Text>
-            <View style={styles.ingredientsContainer}>{listItems}</View>
-          </View>
+
+        <View style={styles.ingredientsContainer}>
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+            List of ingredients:
+          </Text>
+          <View style={styles.ingredientsList}>{listItems}</View>
+        </View>
+
+        <View style={styles.descriptionContainer}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+            }}
+          >
+            How to prepare:
+          </Text>
+          <Text style={{ fontSize: 15 }}>{drink.description}</Text>
         </View>
       </View>
     </SafeAreaView>
@@ -138,62 +150,54 @@ export default ItemDetailScreen;
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
     flex: 1,
     justifyContent: "center",
     backgroundColor: "white",
   },
   containerImage: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "white",
-    marginTop: 50,
-    marginLeft: 20,
-    marginRight: 20,
+    flex: 2,
+  },
+  containerContent: {
+    flex: 5,
+    marginRight: 15,
+    marginLeft: 15,
   },
   drinkImage: {
-    height: 250,
-    flex: 1,
     width: null,
+    height: "95%",
+    marginTop: 20,
+    marginRight: 15,
+    marginLeft: 15,
   },
-  containerTitle: {
-    width: "100%",
-    height: "60%",
-    padding: 5,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginRight: 20,
-    marginLeft: 20,
-  },
-  containerBox: {
-    width: "100%",
-    height: "20%",
-    padding: 5,
-  },
-  innerContainer: {
+  titleContainer: {
     flex: 1,
-    alignContent: "center",
-    justifyContent: "space-between",
     flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  drinkName: {
-    fontSize: 40,
-    fontWeight: "bold",
+    justifyContent: "space-between",
+    alignContent: "center",
   },
   favouriteContainer: {
-    flex: 1,
-    alignContent: "center",
-    alignItems: "center",
-    marginTop: 5,
-  },
-  innerContainerIngredients: {
-    flex: 1,
-    alignContent: "flex-start",
-    justifyContent: "flex-start",
+    display: "flex",
     flexDirection: "column",
-    flexWrap: "wrap",
+    alignItems: "center",
+    marginRight: 10,
+    marginTop: 10,
   },
   ingredientsContainer: {
-    flex: 1,
+    flex: 2,
+    backgroundColor: "#A9B4C2",
+    borderRadius: 10,
+    padding: 5,
+    marginBottom: 10,
+  },
+  ingredientsList: {
+    marginLeft: 20,
+  },
+  descriptionContainer: {
+    flex: 3,
+    backgroundColor: "#A9B4C2",
+    borderRadius: 10,
+    padding: 5,
+    marginBottom: 10,
   },
 });

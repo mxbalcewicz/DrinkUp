@@ -9,7 +9,7 @@ import {
   ImageBackground,
   Dimensions,
   Button,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import firebase from "../../config/firebase";
@@ -65,17 +65,13 @@ const MenuDetailScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView>
-      <Text>MenuDetailScreen</Text>
-      <Text>ItemDetail</Text>
-      <Text>{menu.name}</Text>
-      <Text>{menu.drinks}</Text>
       <FlatList
         ListHeaderComponent={
           <View>
-            <Image
-              source={require("../../assets/images/homescreen.jpg")}
-              style={styles.headerImage}
-            />
+            <Image source={{ uri: menu.imgUrl }} style={styles.headerImage} />
+            <View style={styles.textView}>
+              <Text style={styles.titleText}>Drinks in {menu.name}</Text>
+            </View>
           </View>
         }
         data={drinks}
@@ -85,7 +81,7 @@ const MenuDetailScreen = ({ route, navigation }) => {
             style={{ overflow: "hidden" }}
             onPress={() => {
               navigation.navigate("ItemDetail", {
-                ...item
+                ...item,
               });
             }}
           >
@@ -129,12 +125,28 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   item: {
-    backgroundColor: "#e5b513",
+    backgroundColor: "#313638",
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
     height: Dimensions.get("window").width / numColumns - 2,
     width: Dimensions.get("window").width / numColumns - 2,
     margin: 1,
+  },
+  textView: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  titleText: {
+    fontSize: 30,
+    color: "white",
   },
 });

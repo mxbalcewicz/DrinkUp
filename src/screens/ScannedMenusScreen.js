@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   ImageBackground,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import firebase from "../../config/firebase";
@@ -83,9 +83,12 @@ const ScannedMenusScreen = ({ navigation }) => {
         ListHeaderComponent={
           <View>
             <Image
-              source={require("../../assets/images/homescreen.jpg")}
+              source={require("../../assets/images/scannedMenu.jpg")}
               style={styles.headerImage}
             />
+            <View style={styles.textView}>
+              <Text style={styles.titleText}>Menus scanned by you</Text>
+            </View>
           </View>
         }
         data={menus}
@@ -137,12 +140,28 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   item: {
-    backgroundColor: "#e5b513",
+    backgroundColor: "#313638",
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
     height: Dimensions.get("window").width / numColumns - 2,
     width: Dimensions.get("window").width / numColumns - 2,
     margin: 1,
+  },
+  textView: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  titleText: {
+    fontSize: 30,
+    color: "white",
   },
 });
