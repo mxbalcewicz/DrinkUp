@@ -92,7 +92,7 @@ const ItemDetailScreen = ({ route, navigation }) => {
   }
 
   const listItems = drink.ingredients.map((el) => (
-    <Text style={{ fontSize: 15 }}>- {el}</Text>
+    <Text style={{ fontSize: 14 }}>- {el}</Text>
   ));
 
   return (
@@ -107,7 +107,7 @@ const ItemDetailScreen = ({ route, navigation }) => {
 
       <View style={styles.containerContent}>
         <View style={styles.titleContainer}>
-          <Text style={{ fontSize: 30, fontWeight: "bold" }}>{drink.name}</Text>
+          <Text style={{ fontSize: 25, fontWeight: "bold" }}>{drink.name}</Text>
           <View style={styles.favouriteContainer}>
             <Text>Add to favourite:</Text>
             <IconButton
@@ -124,7 +124,7 @@ const ItemDetailScreen = ({ route, navigation }) => {
         </View>
 
         <View style={styles.ingredientsContainer}>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+          <Text style={{ fontSize: 17, fontWeight: "bold" }}>
             List of ingredients:
           </Text>
           <View style={styles.ingredientsList}>{listItems}</View>
@@ -133,13 +133,13 @@ const ItemDetailScreen = ({ route, navigation }) => {
         <View style={styles.descriptionContainer}>
           <Text
             style={{
-              fontSize: 20,
+              fontSize: 17,
               fontWeight: "bold",
             }}
           >
             How to prepare:
           </Text>
-          <Text style={{ fontSize: 15 }}>{drink.description}</Text>
+          <Text style={{ fontSize: 14 }}>{drink.description}</Text>
         </View>
       </View>
     </SafeAreaView>
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   descriptionContainer: {
-    flex: 3,
+    flex: 2,
     backgroundColor: "#A9B4C2",
     borderRadius: 10,
     padding: 5,
