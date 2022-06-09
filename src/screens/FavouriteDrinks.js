@@ -126,7 +126,7 @@ const FavouriteDrinks = ({ navigation }) => {
           </TouchableOpacity>
         )}
         numColumns={2}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item, index) => { return item.hex}}
       />
     </SafeAreaView>
   );

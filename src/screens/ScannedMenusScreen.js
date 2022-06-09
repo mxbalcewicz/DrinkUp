@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import firebase from "../../config/firebase";
+import { useIsFocused } from "@react-navigation/native";
 
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 2;
@@ -22,6 +23,7 @@ const ScannedMenusScreen = ({ navigation }) => {
   const [menus, setMenus] = useState();
   const [userId, setUserId] = useState();
   const [empty, setEmpty] = useState(false);
+  const isFocused = useIsFocused();
 
   const fetchUserId = () => {
     const userId = firebase.auth().currentUser.uid;
@@ -71,10 +73,8 @@ const ScannedMenusScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      fetchData();
-    });
-  }, [navigation]);
+    fetchData();
+  }, [isFocused]);
 
   if (isLoading) {
     return (
@@ -181,6 +181,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingTop: 5,
     textAlign: "center",
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
 });
