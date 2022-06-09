@@ -10,6 +10,9 @@ import {
 import LoginScreen from "../screens/LoginScreen";
 import HomeScreen from "../screens/HomeScreen";
 import RegisterScreen from "../screens/RegisterScreen";
+import CategoryScreen from "../screens/CategoryScreen";
+import ItemDetailScreen from "../screens/ItemDetailScreen";
+
 import Firebase from "../../config/firebase";
 
 const Stack = createStackNavigator();
@@ -32,6 +35,21 @@ export default function UnauthenticatedStack() {
       <Drawer.Screen
         name="Register"
         component={RegisterScreen}
+        options={{
+          drawerItemStyle: { display: "none" },
+        }}
+      />
+      <Drawer.Screen
+        name="Category"
+        component={CategoryScreen}
+        options={{
+          drawerItemStyle: { display: "none" },
+        }}
+      />
+      <Drawer.Screen
+        name="ItemDetail"
+        component={ItemDetailScreen}
+        initialParams={{loggedIn: false}}
         options={{
           drawerItemStyle: { display: "none" },
         }}

@@ -21,6 +21,7 @@ const ScannedMenusScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [menus, setMenus] = useState();
   const [userId, setUserId] = useState();
+  const [empty, setEmpty] = useState(false);
 
   const fetchUserId = () => {
     const userId = firebase.auth().currentUser.uid;
@@ -39,21 +40,25 @@ const ScannedMenusScreen = ({ navigation }) => {
   };
 
   const fetchMenusObjectsList = async (menusIds) => {
-    const snapshot = await firebase
-      .firestore()
-      .collection("menus")
-      .where(firebase.firestore.FieldPath.documentId(), "in", menusIds)
-      .get();
-
     const menusObjects = [];
-    snapshot.forEach((doc) => {
-      const { name, drinks, imgUrl } = doc.data();
-      menusObjects.push({
-        imgUrl: imgUrl,
-        name: name,
-        drinks: drinks,
+    if (menusIds.length !== 0) {
+      const snapshot = await firebase
+        .firestore()
+        .collection("menus")
+        .where(firebase.firestore.FieldPath.documentId(), "in", menusIds)
+        .get();
+
+      snapshot.forEach((doc) => {
+        const { name, drinks, imgUrl } = doc.data();
+        menusObjects.push({
+          imgUrl: imgUrl,
+          name: name,
+          drinks: drinks,
+        });
       });
-    });
+    } else {
+      setEmpty(true);
+    }
     setMenus(menusObjects);
     console.log(menusObjects);
     setIsLoading(false);
@@ -66,8 +71,10 @@ const ScannedMenusScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    const unsubscribe = navigation.addListener("focus", () => {
+      fetchData();
+    });
+  }, [navigation]);
 
   if (isLoading) {
     return (
@@ -87,8 +94,11 @@ const ScannedMenusScreen = ({ navigation }) => {
               style={styles.headerImage}
             />
             <View style={styles.textView}>
-              <Text style={styles.titleText}>Menus scanned by you</Text>
+              <Text style={styles.titleText}>Your menus</Text>
             </View>
+            {empty ? (
+              <Text style={styles.emptyText}>Empty scanned menus</Text>
+            ) : null}
           </View>
         }
         data={menus}
@@ -107,7 +117,7 @@ const ScannedMenusScreen = ({ navigation }) => {
           </TouchableOpacity>
         )}
         numColumns={2}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index}
       />
     </SafeAreaView>
   );
@@ -164,4 +174,13 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "white",
   },
+  emptyText: {
+    backgroundColor: "grey",
+    borderRadius: 5,
+    margin: 1,
+    paddingBottom: 5,
+    paddingTop: 5,
+    textAlign: "center",
+    fontWeight: "bold"
+  }
 });

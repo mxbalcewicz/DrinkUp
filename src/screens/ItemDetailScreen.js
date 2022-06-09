@@ -18,8 +18,9 @@ import firebase from "../../config/firebase";
 const ItemDetailScreen = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const drink = route.params;
+  const loggedIn = route.params.loggedIn;
   const [userFavourites, setUserFavourites] = useState([]);
-  const [isFavourite, setIsFavourite] = useState(false);
+  const [isFavourite, setIsFavourite] = useState();
   const [userId, setUserId] = useState();
   const isFocused = useIsFocused();
 
@@ -36,18 +37,32 @@ const ItemDetailScreen = ({ route, navigation }) => {
       .doc(userId)
       .get();
 
-    setUserFavourites(snapshot.data().favourites);
-    console.log(userFavourites);
-    if (snapshot.data().favourites.includes(drink.hex)) {
+    const ids = snapshot.data().favourites;
+
+    if (ids.includes(drink.hex)) {
       setIsFavourite(true);
     } else {
       setIsFavourite(false);
     }
   };
 
+  // const handleFavIcon = (ids) => {
+  //   console.log("fav ids", ids);
+  //   if (ids.includes(drink.hex)) {
+  //     setIsFavourite(true);
+  //   } else {
+  //     setIsFavourite(false);
+  //   }
+  // }
+
   const fetchData = async () => {
-    const userId = fetchUserId();
-    const favouriteIds = await fetchFavouriteDrinksIds(userId);
+    if (loggedIn) {
+      const userId = fetchUserId();
+      const favouriteIds = await fetchFavouriteDrinksIds(userId);
+      // const favIcon = handleFavIcon(favouriteIds);
+    }
+
+    setIsLoading(false);
   };
 
   const removeFromFavourites = async (data) => {
@@ -56,7 +71,8 @@ const ItemDetailScreen = ({ route, navigation }) => {
       favourites: firebase.firestore.FieldValue.arrayRemove(data),
     });
     console.log("Fav removed");
-    fetchFavouriteDrinksIds(userId);
+    // fetchFavouriteDrinksIds(userId);
+    fetchData();
   };
 
   const addToFavourites = async (data) => {
@@ -68,20 +84,13 @@ const ItemDetailScreen = ({ route, navigation }) => {
       favourites: firebase.firestore.FieldValue.arrayUnion(data),
     });
     console.log("Updated");
-    fetchFavouriteDrinksIds(userId);
-  };
-
-  const scanNewMenu = async (data) => {
-    const value = firebase.firestore.FieldValue.arrayUnion(data);
-    const docRef = firebase.firestore().collection("users").doc(userId);
-    console.log(userId);
-    docRef.update({ scannedMenus: value }).then(() => console.log("Updated"));
+    // fetchFavouriteDrinksIds(userId);
+    fetchData();
   };
 
   useEffect(() => {
     fetchData();
-    setIsLoading(false);
-  }, []);
+  }, [isFocused]);
 
   if (isLoading) {
     return (
@@ -108,19 +117,21 @@ const ItemDetailScreen = ({ route, navigation }) => {
       <View style={styles.containerContent}>
         <View style={styles.titleContainer}>
           <Text style={{ fontSize: 25, fontWeight: "bold" }}>{drink.name}</Text>
-          <View style={styles.favouriteContainer}>
-            <Text>Add to favourite:</Text>
-            <IconButton
-              icon={isFavourite ? "star" : "star-outline"}
-              color={isFavourite ? Colors.yellow500 : Colors.black500}
-              size={40}
-              onPress={
-                isFavourite
-                  ? () => removeFromFavourites(drink.hex)
-                  : () => addToFavourites(drink.hex)
-              }
-            />
-          </View>
+          {loggedIn ? (
+            <View style={styles.favouriteContainer}>
+              <Text>Add to favourite:</Text>
+              <IconButton
+                icon={isFavourite ? "star" : "star-outline"}
+                color={isFavourite ? Colors.yellow500 : Colors.black500}
+                size={40}
+                onPress={
+                  isFavourite
+                    ? () => removeFromFavourites(drink.hex)
+                    : () => addToFavourites(drink.hex)
+                }
+              />
+            </View>
+          ) : null}
         </View>
 
         <View style={styles.ingredientsContainer}>

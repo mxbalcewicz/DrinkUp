@@ -10,7 +10,9 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo-google-fonts/great-vibes": "^0.2.2",
     "@expo-google-fonts/inter": "^0.2.2",
+    "@expo-google-fonts/roboto": "^0.2.2",
     "@react-navigation/drawer": "^6.3.2",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.6.2",

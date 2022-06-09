@@ -91,7 +91,7 @@ const MenuDetailScreen = ({ route, navigation }) => {
           </TouchableOpacity>
         )}
         numColumns={2}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.hex}
       />
     </SafeAreaView>
   );
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     textAlign: "center",
     fontSize: 20,
-    color: "white",
+    color: "black",
     textTransform: "capitalize",
   },
   item: {

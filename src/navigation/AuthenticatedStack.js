@@ -57,6 +57,7 @@ export default function AuthenticatedStack() {
         options={{
           drawerItemStyle: { display: "none" },
         }}
+        initialParams={{loggedIn: true}}
       />
       <Drawer.Screen
         name="MenuDetailScreen"

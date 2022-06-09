@@ -10,6 +10,7 @@ import {
   ImageBackground,
   Dimensions,
 } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import firebase from "../../config/firebase";
 
@@ -19,8 +20,10 @@ const tileSize = screenWidth / numColumns;
 
 const FavouriteDrinks = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [empty, setEmpty] = useState(false);
   const [userId, setUserId] = useState();
   const [drinks, setDrinks] = useState([]);
+  const isFocused = useIsFocused();
 
   const fetchUserId = () => {
     const userId = firebase.auth().currentUser.uid;
@@ -39,29 +42,34 @@ const FavouriteDrinks = ({ navigation }) => {
   };
 
   const fetchFavouriteDrinks = async (drinksIds) => {
-    const snapshot = await firebase
-      .firestore()
-      .collection("drinks")
-      .where(firebase.firestore.FieldPath.documentId(), "in", drinksIds)
-      .get();
-
     const drinks = [];
-    snapshot.forEach((doc) => {
-      const { hex, category, description, name, imgUrl, ingredients } =
-        doc.data();
 
-      console.log(doc.data());
+    if (drinksIds.length !== 0) {
+      const snapshot = await firebase
+        .firestore()
+        .collection("drinks")
+        .where(firebase.firestore.FieldPath.documentId(), "in", drinksIds)
+        .get();
 
-      drinks.push({
-        id: doc.id,
-        hex,
-        category,
-        description,
-        name,
-        imgUrl,
-        ingredients,
+      snapshot.forEach((doc) => {
+        const { hex, category, description, name, imgUrl, ingredients } =
+          doc.data();
+
+        console.log(doc.data());
+
+        drinks.push({
+          id: doc.id,
+          hex,
+          category,
+          description,
+          name,
+          imgUrl,
+          ingredients,
+        });
       });
-    });
+    } else {
+      setEmpty(true);
+    }
 
     setDrinks(drinks);
     setIsLoading(false);
@@ -75,7 +83,7 @@ const FavouriteDrinks = ({ navigation }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [isFocused]);
 
   if (isLoading) {
     return (
@@ -97,6 +105,9 @@ const FavouriteDrinks = ({ navigation }) => {
             <View style={styles.textView}>
               <Text style={styles.titleText}>Favourites</Text>
             </View>
+            {empty ? (
+              <Text style={styles.emptyText}>Empty favourites</Text>
+            ) : null}
           </View>
         }
         data={drinks}
@@ -115,7 +126,7 @@ const FavouriteDrinks = ({ navigation }) => {
           </TouchableOpacity>
         )}
         numColumns={2}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index}
       />
     </SafeAreaView>
   );
@@ -144,7 +155,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     textAlign: "center",
     fontSize: 20,
-    color: "white",
+    color: "black",
     textTransform: "capitalize",
   },
   item: {
@@ -171,5 +182,14 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 30,
     color: "white",
+  },
+  emptyText: {
+    backgroundColor: "grey",
+    borderRadius: 5,
+    margin: 1,
+    paddingBottom: 5,
+    paddingTop: 5,
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });

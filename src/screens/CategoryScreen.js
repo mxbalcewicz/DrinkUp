@@ -13,8 +13,14 @@ import firebase from "../../config/firebase";
 import React, { useState, useEffect } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useIsFocused } from "@react-navigation/native";
+import { useFonts, Roboto_400Regular } from '@expo-google-fonts/roboto';
+import { GreatVibes_400Regular } from "@expo-google-fonts/great-vibes";
 
 const CategoryScreen = ({ route, navigation }) => {
+  let [fontsLoaded] = useFonts({
+    Roboto_400Regular
+  });
+  
   const screenWidth = Dimensions.get("window").width;
   const numColumns = 2;
   const tileSize = screenWidth / numColumns;
@@ -58,7 +64,7 @@ const CategoryScreen = ({ route, navigation }) => {
     }
   }, [isFocused]);
 
-  if (isLoading) {
+  if (isLoading && !fontsLoaded) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#ffcc00" />
@@ -76,7 +82,7 @@ const CategoryScreen = ({ route, navigation }) => {
               style={styles.headerImage}
             >
               <View style={styles.textView}>
-                <Text style={styles.titleText}>Category: {data.name}</Text>
+                <Text style={styles.titleText}>{data.name}</Text>
               </View>
             </ImageBackground>
           </View>
@@ -101,16 +107,8 @@ const CategoryScreen = ({ route, navigation }) => {
           </TouchableOpacity>
         )}
         numColumns={2}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item, index) => { return item.hex }}
       />
-      <TouchableOpacity
-        onPress={() => {
-          console.log(drinks);
-          console.log(data);
-        }}
-      >
-        <Text>PRINT FETCHED DATA</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -135,7 +133,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 20,
-    color: "white",
+    color: "black",
   },
   textView: {
     position: "absolute",
@@ -150,7 +148,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   titleText: {
-    fontSize: 30,
+    fontSize: 50,
     color: "white",
   },
 });
